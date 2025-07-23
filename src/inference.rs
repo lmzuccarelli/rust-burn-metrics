@@ -5,9 +5,6 @@ use burn::{
     tensor::backend::Backend,
 };
 
-//use rgb::RGB8;
-//use textplots::{Chart, ColorPlot, Shape};
-
 use crate::{
     dataset::{Metrics, MetricsBatcher, MetricsDataset, NUM_CLASSES, NUM_FEATURES},
     model::{ModelConfig, ModelRecord},
@@ -27,8 +24,8 @@ pub fn infer<B: Backend>(artifact_dir: &str, device: B::Device) {
     let dataset = MetricsDataset::test();
     let items: Vec<Metrics> = dataset.iter().take(2000).collect();
 
-    let batcher = MetricsBatcher::new(device);
-    let batch = batcher.batch(items.clone());
+    let batcher = MetricsBatcher::new(device.clone());
+    let batch = batcher.batch(items.clone(), &device);
     let predicted = model.forward(batch.inputs.clone());
     let targets = batch.targets;
 
@@ -59,28 +56,6 @@ pub fn infer<B: Backend>(artifact_dir: &str, device: B::Device) {
         count,
         (correct as f32 / count as f32) * 100.0
     );
-
-    /*
-    let points = predicted
-        .iter::<f32>()
-        .zip(expected.iter::<f32>())
-        .collect::<Vec<_>>();
-
-    println!("Predicted vs. Expected Vital Signs Status");
-    Chart::new_with_y_range(32, 32, 0., 5., 0., 5.)
-        .linecolorplot(
-            &Shape::Points(&points),
-            RGB8 {
-                r: 255,
-                g: 85,
-                b: 85,
-            },
-        )
-        .display();
-
-    // Print a single numeric value as an example
-    println!("Predicted {:?} Expected {:?}", points[17].0, points[17].1);
-    */
 }
 
 fn find_max_index(input: &Vec<f32>) -> (usize, f32) {

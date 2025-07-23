@@ -17,14 +17,45 @@ Change the directories and file names before compiling.
 
 clone the repo
 
-```
 cd rust-burn-metrics
 
 # build 
 
 cargo build --release
 
-#execute
+#execute (train)
 
-./target/release/rust-burn-metrics train
-```
+./target/release/rust-burn-metrics --config app-config.json train
+
+# execute (inference)
+
+./target/release/rust-burn-metrics --config app-config.json inference
+
+# execute (serve)
+
+./target/release/rust-burn-metrics --config app-config.json serve
+
+ # create a simple json file to check the prediction
+cat <<EOF > metrics.json 
+{
+  "cpu": 22.3,
+  "memory": 54.5,
+  "disk": i12.9,
+  "qtime": 43.9,
+  "status": 1
+}
+
+curl -k -d'&metrics.json' https://localhost:8085/inference
+
+Certs
+
+A script is included to create the key pairs for this service (tls)
+
+It will copy a rootCA.pem file and update the local CA trust
+
+N.B. Update the script (i.e -subj section to your requirments). The script is "fedora" specific, change it for your distro (espescially the trusted CA location)
+
+Execute it with the following parameters
+
+scripts/create-key-pair.sh <hostname> <ip>
+``

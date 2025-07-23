@@ -1,0 +1,9 @@
+{
+	"name": "rust-burn-metrics",
+	"description": "a simple neural network to train,infer and serve metrics",
+	"port": "8085",
+	"log_level": "debug",
+	"certs_dir": "./certs/",
+	"cert_mode": "file",
+	"artifacts_dir": "metrics"
+}
